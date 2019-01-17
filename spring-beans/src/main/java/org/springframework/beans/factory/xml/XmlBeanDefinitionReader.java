@@ -75,6 +75,10 @@ import org.springframework.util.xml.XmlValidationModeDetector;
  * @see org.springframework.beans.factory.support.DefaultListableBeanFactory
  * @see org.springframework.context.support.GenericApplicationContext
  */
+
+/**
+ * xml 配置的 读取器
+ */
 public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 
 	/**
@@ -301,6 +305,7 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 	 */
 	@Override
 	public int loadBeanDefinitions(Resource resource) throws BeanDefinitionStoreException {
+		//封装 资源 地址 变成资源对象 以便获取文件内容
 		return loadBeanDefinitions(new EncodedResource(resource));
 	}
 
@@ -310,6 +315,12 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 	 * allowing to specify an encoding to use for parsing the file
 	 * @return the number of bean definitions found
 	 * @throws BeanDefinitionStoreException in case of loading or parsing errors
+	 */
+	/**
+	 *
+	 * @param encodedResource 资源路径
+	 * @return
+	 * @throws BeanDefinitionStoreException
 	 */
 	public int loadBeanDefinitions(EncodedResource encodedResource) throws BeanDefinitionStoreException {
 		Assert.notNull(encodedResource, "EncodedResource must not be null");
@@ -389,7 +400,9 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 			throws BeanDefinitionStoreException {
 
 		try {
+			//读取stream 中的 内容 变成Doc对象
 			Document doc = doLoadDocument(inputSource, resource);
+			//将doc对象变成 BeanDefinitions
 			int count = registerBeanDefinitions(doc, resource);
 			if (logger.isDebugEnabled()) {
 				logger.debug("Loaded " + count + " bean definitions from " + resource);
@@ -508,9 +521,13 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 	 * @see BeanDefinitionDocumentReader#registerBeanDefinitions
 	 */
 	public int registerBeanDefinitions(Document doc, Resource resource) throws BeanDefinitionStoreException {
+		//创建一个 doc 阅读器
 		BeanDefinitionDocumentReader documentReader = createBeanDefinitionDocumentReader();
+		//获取之前的bean定义数量
 		int countBefore = getRegistry().getBeanDefinitionCount();
+		//将 doc 变成 beandefinitions
 		documentReader.registerBeanDefinitions(doc, createReaderContext(resource));
+		//相减 得到这次 定义了 多少 bean
 		return getRegistry().getBeanDefinitionCount() - countBefore;
 	}
 

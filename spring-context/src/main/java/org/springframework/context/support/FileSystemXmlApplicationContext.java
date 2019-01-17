@@ -137,7 +137,9 @@ public class FileSystemXmlApplicationContext extends AbstractXmlApplicationConte
 			throws BeansException {
 
 		super(parent);
+		//设置 配置 文件 路径
 		setConfigLocations(configLocations);
+
 		if (refresh) {
 			refresh();
 		}
